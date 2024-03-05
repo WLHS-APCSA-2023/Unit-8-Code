@@ -27,7 +27,11 @@ public class ImageGenerator {
     }
 
     private void initializeCanvas(Color color) {
-        
+        for (int row = 0; row < HEIGHT; row++) {
+            for (int col = 0; col < WIDTH; col++) {
+                image[row][col] = color;
+            }
+        }
     }
 
     private void createImage() {
