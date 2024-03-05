@@ -18,16 +18,22 @@ public class ImageGenerator {
     private static final Color SILVER = new Color(192, 192, 192);
     private static final Color WHITE = new Color(255, 255, 255);
     private static final Color MIDNIGHT_PURPLE = new Color(46, 26, 71);
+    private static final Color MARS_RED = new Color(161, 37, 27);
+    private static final Color LIGHT_YELLOW = new Color(255, 255, 102);
 
     public static void main(String[] args) {
         ImageGenerator generator = new ImageGenerator();
         generator.initializeCanvas(MIDNIGHT_PURPLE);
         generator.createImage();
-        generator.writeImage("myArt.ppm");
+        generator.writeImage("BrandonSmith.ppm");
     }
 
     private void initializeCanvas(Color color) {
-        
+        for (int row = 0; row < HEIGHT; row++) {
+            for (int col = 0; col < WIDTH; col++) {
+                image[row][col] = color;
+            }
+        }
     }
 
     private void createImage() {
@@ -39,10 +45,43 @@ public class ImageGenerator {
             int randomYPosition = rand.nextInt(HEIGHT);
             drawCircle(randomXPosition, randomYPosition, 1, WHITE, WHITE);
         }
+
+        // Horizon
+        drawRect(0, (int) (0.67 * HEIGHT), WIDTH, (int) (0.33 * HEIGHT), BLACK);
+
+        // Planet
+        drawCircle((int) (0.1 * WIDTH), (int) (0.2 * HEIGHT), (int) (0.03 * HEIGHT), MARS_RED, BLACK);
+
+        // UFO hatch
+        drawEllipse((int) (0.8 * WIDTH), (int) (0.1 * HEIGHT), 40, 20, SILVER, SILVER);
+
+        // UFO body
+        drawEllipse((int) (0.8 * WIDTH), (int) (0.15 * HEIGHT), (int) (0.1 * WIDTH), (int) (0.05 * HEIGHT), RED, BLUE);
+
+        // Tractor beam
+        drawRect((int) (0.78 * WIDTH), (int) (0.2 * HEIGHT), 50, (int) (0.5 * HEIGHT), LIGHT_YELLOW);
+
+        // Animal's head
+        drawCircle((int) (0.8 * WIDTH), (int) (0.45 * HEIGHT), 5, BLACK, BLACK);
+
+        // Animal's body
+        drawRect((int) (0.8 * WIDTH) - 10, (int) (0.45 * HEIGHT) + 5, 20, 15, BLACK);
+
+        // Animal's left legs
+        drawRect((int) (0.8 * WIDTH) - 6, (int) (0.45 * HEIGHT) + 20, 4, 8, BLACK);
+
+        // Animal's right legs
+        drawRect((int) (0.8 * WIDTH) + 2, (int) (0.45 * HEIGHT) + 20, 4, 8, BLACK);
     }
 
     private void drawRect(int left, int top, int width, int height, Color color) {
-        
+        for (int row = top; row < top + height; row++) {
+            for (int col = left; col < left + width; col++) {
+                if (row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH) {
+                    image[row][col] = color;
+                }
+            }
+        }
     }
 
     private void drawCircle(int centerX, int centerY, int radius, Color color, Color gradientColor) {
@@ -56,7 +95,16 @@ public class ImageGenerator {
     }
 
     private void drawEllipse(int centerX, int centerY, int xRadius, int yRadius, Color color, Color gradientColor) {
-        
+        double x, y;
+        for (int row = centerY - yRadius; row <= centerY + yRadius; row++) {
+            for (int col = centerX - xRadius; col <= centerX + xRadius; col++) {
+                x = Math.pow(col - centerX, 2) / Math.pow(xRadius, 2);
+                y = Math.pow(row - centerY, 2) / Math.pow(yRadius, 2);
+                if (x + y <= 1) {
+                    image[row][col] = color; // Simplified for uniform color
+                }
+            }
+        }
     }
 
     private boolean writeImage(String fileName) {
